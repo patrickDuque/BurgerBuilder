@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
-import HomePage from './views/HomePage';
+import React from 'react';
+import './scss/App.scss';
+import Layout from './components/Layout';
+import BurgerBuilder from './views/BurgerBuilder';
 
 function App() {
-  return <HomePage />;
+  return (
+    <Layout>
+      <BurgerBuilder />
+    </Layout>
+  );
 }
 
 export default App;
-	
