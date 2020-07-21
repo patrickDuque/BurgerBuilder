@@ -1,14 +1,25 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Backdrop from './Backdrop';
 import Aux from '../../hoc/Auxilliary';
 
-export default props => (
-  <Aux>
-    <Backdrop show={props.show} remove={props.removeModal} />
-    <div
-      id='Modal'
-      style={{ transform: props.show ? 'translateY(0)' : 'translateY(-100vh)', opacity: props.show ? '1' : '0' }}>
-      {props.children}
-    </div>
-  </Aux>
-);
+export default class extends Component {
+  shouldComponentUpdate(nextP, nextS) {
+    return nextP.show !== this.props.show;
+  }
+
+  render() {
+    return (
+      <Aux>
+        <Backdrop show={this.props.show} remove={this.props.removeModal} />
+        <div
+          id='Modal'
+          style={{
+            transform : this.props.show ? 'translateY(0)' : 'translateY(-100vh)',
+            opacity   : this.props.show ? '1' : '0'
+          }}>
+          {this.props.children}
+        </div>
+      </Aux>
+    );
+  }
+}
