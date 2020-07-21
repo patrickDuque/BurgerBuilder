@@ -23,5 +23,8 @@ export default props => (
         label={control.label}
       />
     ))}
+    <button onClick={props.order} disabled={!props.purchaseable} className='OrderButton'>
+      ORDER NOW
+    </button>
   </div>
 );
