@@ -18,7 +18,9 @@ export default props => {
         <strong>Total of: &#8369;{props.price}</strong>
       </p>
       <p>Continue to checkout?</p>
-      <CustomButton type='Success'>CONTINUE</CustomButton>
+      <CustomButton click={props.continue} type='Success'>
+        CONTINUE
+      </CustomButton>
       <CustomButton click={props.cancel} type='Danger'>
         CANCEL
       </CustomButton>

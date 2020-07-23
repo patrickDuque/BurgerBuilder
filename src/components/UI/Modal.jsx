@@ -4,7 +4,7 @@ import Aux from '../../hoc/Auxilliary';
 
 export default class extends Component {
   shouldComponentUpdate(nextP, nextS) {
-    return nextP.show !== this.props.show;
+    return nextP.show !== this.props.show || nextP.children !== this.props.children;
   }
 
   render() {
