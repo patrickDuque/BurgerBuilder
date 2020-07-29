@@ -5,7 +5,6 @@ export default props => {
     ing,
     props.order.ingredients[ing]
   ]);
-  console.log(ingredients);
 
   return (
     <div id='Order'>
