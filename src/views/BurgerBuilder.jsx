@@ -75,42 +75,16 @@ export default withErrorHandler(
     };
 
     continueToCheckoutHandler = () => {
-      this.setState({ loading: true });
-      const time = new Date();
-      const data = {
-        ingredients : this.state.ingredients,
-        price       : this.state.price,
-        customer    : {
-          name        : 'Patrick',
-          address     : {
-            street : 'Ruby',
-            town   : 'Pandayan',
-            city   : 'Meycauayan'
-          },
-          phoneNumber : '09176365214'
-        },
-        timeOrdered : `${time.getHours()}:${time.getMinutes()}`
-      };
-      axios
-        .post('/orders.json', data)
-        .then(res => {
-          console.log(res);
-          this.setState({
-            ingredients : {
-              salad  : 0,
-              cheese : 0,
-              meat   : 0,
-              bacon  : 0
-            },
-            order       : false,
-            loading     : false,
-            price       : 15
-          });
-        })
-        .catch(err => {
-          console.log(err);
-          this.setState({ loading: false });
-        });
+      const queryParams = [];
+      for (let ingredient in this.state.ingredients) {
+        queryParams.push(encodeURIComponent(ingredient) + '=' + encodeURIComponent(this.state.ingredients[ingredient]));
+      }
+      queryParams.push('price=' + this.state.price);
+      const queryString = queryParams.join('&');
+      this.props.history.push({
+        pathname : '/checkout',
+        search   : `?${queryString}`
+      });
     };
 
     removeModalHandler = () => {
