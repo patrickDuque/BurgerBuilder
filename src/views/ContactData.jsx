@@ -18,7 +18,8 @@ export default withRouter(
       loading   : false
     };
 
-    orderHandler = () => {
+    submitOrderHandler = e => {
+      e.preventDefault();
       this.setState({ loading: true });
       const time = new Date();
       const data = {
@@ -47,22 +48,19 @@ export default withRouter(
     };
 
     onChangeOrderHandler = e => {
-      this.setState({ orderForm: { ...this.state.orderForm, [e.target.id]: e.target.value } }, () =>
-        console.log(this.state.orderForm)
-      );
+      this.setState({ orderForm: { ...this.state.orderForm, [e.target.id]: e.target.value } });
     };
 
     render() {
       let data = <Spinner />;
       if (!this.state.loading) {
         data = (
-          <form>
+          <form onSubmit={this.submitOrderHandler}>
             <CustomInput
               onChange={this.onChangeOrderHandler}
               value={this.state.orderForm.name}
               type='text'
               name='name'
-              placeholder='Name'
               label='Name'
               id='name'
             />
@@ -71,7 +69,6 @@ export default withRouter(
               value={this.state.orderForm.street}
               type='text'
               name='street'
-              placeholder='Street'
               label='Street'
               id='street'
             />
@@ -80,7 +77,6 @@ export default withRouter(
               value={this.state.orderForm.town}
               type='text'
               name='town'
-              placeholder='Town'
               label='Town'
               id='town'
             />
@@ -89,7 +85,6 @@ export default withRouter(
               value={this.state.orderForm.city}
               type='text'
               name='city'
-              placeholder='City'
               label='City'
               id='city'
             />
@@ -98,13 +93,10 @@ export default withRouter(
               value={this.state.orderForm.phoneNumber}
               type='number'
               name='phoneNumber'
-              placeholder='Contact Number'
               label='Contact Number'
               id='phoneNumber'
             />
-            <CustomButton type='Success' click={this.orderHandler}>
-              ORDER
-            </CustomButton>
+            <CustomButton type='Success'>ORDER</CustomButton>
           </form>
         );
       }
