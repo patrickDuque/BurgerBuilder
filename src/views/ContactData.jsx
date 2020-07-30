@@ -1,11 +1,30 @@
+// Dependencies
 import React, { Component } from 'react';
+import axios from '../axios';
+import { connect } from 'react-redux';
+
+// Constants
+import * as actionTypes from '../store/actions';
+
+// Components
 import CustomButton from '../components/UI/CustomButton';
 import Spinner from '../components/UI/Spinner';
 import CustomInput from '../components/UI/CustomInput';
-import axios from '../axios';
-import { withRouter } from 'react-router-dom';
 
-export default withRouter(
+const mapStateToProps = state => {
+  return {
+    ingredients : state.ingredients,
+    price       : state.ingredients
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onResetIngredients : () => dispatch({ type: actionTypes.RESET_INGREDIENTS })
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(
   class extends Component {
     state = {
       orderForm : {
@@ -44,6 +63,7 @@ export default withRouter(
         .catch(err => {
           console.log(err);
         });
+      this.props.onResetIngredients();
       this.props.history.push('/');
     };
 
