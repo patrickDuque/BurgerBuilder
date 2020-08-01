@@ -3,7 +3,8 @@ import * as actionTypes from './actions/actionTypes';
 
 const initialState = {
   ingredients : null,
-  price       : 15
+  price       : 15,
+  orders      : []
 };
 
 const INGREDIENT_PRICES = {
@@ -37,6 +38,12 @@ const reducer = (state = initialState, action) => {
       };
     case actionTypes.RESET_INGREDIENTS:
       return { ...state, ingredients: { salad: 0, meat: 0, bacon: 0, cheese: 0 }, price: 15 };
+    case actionTypes.GET_ORDERS:
+      const ord = [];
+      for (let order in action.data) {
+        ord.push({ ...action.data[order], id: order });
+      }
+      return { ...state, orders: ord };
     default:
       return state;
   }

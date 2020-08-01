@@ -14,7 +14,7 @@ import CustomInput from '../components/UI/CustomInput';
 const mapStateToProps = state => {
   return {
     ingredients : state.ingredients,
-    price       : state.ingredients
+    price       : state.price
   };
 };
 

@@ -1,34 +1,33 @@
 import React, { Component } from 'react';
 import Order from '../components/Order/Order';
 import Spinner from '../components/UI/Spinner';
-import axios from '../axios';
-import withErrorHandler from '../hoc/withErrorHandler';
+import { ingredientsActions } from '../store/actions/actions';
+import { connect } from 'react-redux';
 
-export default class extends Component {
-  state = {
-    orders : null
+const mapStateToProps = state => {
+  return {
+    orders : state.orders
   };
+};
 
-  componentDidMount() {
-    this.setState({ loading: true });
-    axios
-      .get('/orders.json')
-      .then(res => {
-        const orders = [];
-        for (let order in res.data) {
-          orders.push({ ...res.data[order], id: order });
-        }
-        this.setState({ orders: orders });
-      })
-      .catch(err => {
-        console.log(err);
-      });
+const mapDispatchToProps = dispatch => {
+  return {
+    onGetData : () => dispatch(ingredientsActions.getOrders())
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  class extends Component {
+    componentDidMount() {
+      this.setState({ loading: true });
+      this.props.onGetData();
+    }
+    render() {
+      return (
+        <div style={{ padding: '10px' }}>
+          {this.props.orders ? this.props.orders.map(order => <Order key={order.id} order={order} />) : <Spinner />}
+        </div>
+      );
+    }
   }
-  render() {
-    return (
-      <div style={{ padding: '10px' }}>
-        {this.state.orders ? this.state.orders.map(order => <Order key={order.id} order={order} />) : <Spinner />}
-      </div>
-    );
-  }
-}
+);

@@ -5,6 +5,10 @@ const getIngredients = data => {
   return { type: actionTypes.GET_INGREDIENTS, data };
 };
 
+const getOrders = data => {
+  return { type: actionTypes.GET_ORDERS, data };
+};
+
 export const ingredientsActions = {
   getIngredients   : () => dispatch => {
     axios.get('/ingredients.json').then(result => {
@@ -19,10 +23,10 @@ export const ingredientsActions = {
   },
   resetIngredients : () => {
     return { type: actionTypes.RESET_INGREDIENTS };
-	},
-	submitOrder: data => dispatch => {
-		axios.post('/orders.json', data).then(() => {
-			dispatch(this.resetIngredients())
-		})
-	}
+  },
+  getOrders        : () => dispatch => {
+    axios.get('/orders.json').then(result => {
+      dispatch(getOrders(result.data));
+    });
+  }
 };
