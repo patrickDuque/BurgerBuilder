@@ -20,7 +20,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onResetIngredients : () => dispatch(ingredientsActions.resetIngredients())
+    onResetIngredients : () => dispatch(ingredientsActions.getIngredients())
   };
 };
 

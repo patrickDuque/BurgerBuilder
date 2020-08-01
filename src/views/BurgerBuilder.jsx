@@ -16,9 +16,10 @@ import Spinner from '../components/UI/Spinner';
 import withErrorHandler from '../hoc/withErrorHandler';
 
 const mapStateToProps = state => {
+  const { ingredients, price } = state;
   return {
-    ingredients : state.ingredients,
-    price       : state.price
+    ingredients,
+    price
   };
 };
 

@@ -10,21 +10,18 @@ const getOrders = data => {
 };
 
 export const ingredientsActions = {
-  getIngredients   : () => dispatch => {
+  getIngredients : () => dispatch => {
     axios.get('/ingredients.json').then(result => {
       dispatch(getIngredients(result.data));
     });
   },
-  addIngredient    : type => {
+  addIngredient  : type => {
     return { type: actionTypes.ADD_INGREDIENT, ingredientType: type };
   },
-  subIngredient    : type => {
+  subIngredient  : type => {
     return { type: actionTypes.REMOVE_INGREDIENT, ingredientType: type };
   },
-  resetIngredients : () => {
-    return { type: actionTypes.RESET_INGREDIENTS };
-  },
-  getOrders        : () => dispatch => {
+  getOrders      : () => dispatch => {
     axios.get('/orders.json').then(result => {
       dispatch(getOrders(result.data));
     });

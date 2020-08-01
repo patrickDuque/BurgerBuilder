@@ -17,7 +17,7 @@ const INGREDIENT_PRICES = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_INGREDIENTS:
-      return { ...state, ingredients: action.data };
+      return { ...state, ingredients: action.data, price: 15 };
     case actionTypes.ADD_INGREDIENT:
       return {
         ...state,
@@ -36,8 +36,6 @@ const reducer = (state = initialState, action) => {
         },
         price       : state.price - INGREDIENT_PRICES[action.ingredientType]
       };
-    case actionTypes.RESET_INGREDIENTS:
-      return { ...state, ingredients: { salad: 0, meat: 0, bacon: 0, cheese: 0 }, price: 15 };
     case actionTypes.GET_ORDERS:
       const ord = [];
       for (let order in action.data) {
