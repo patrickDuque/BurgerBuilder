@@ -1,8 +1,8 @@
 /* eslint-disable default-case */
-import * as actionTypes from './actions';
+import * as actionTypes from './actions/actionTypes';
 
 const initialState = {
-  ingredients : { salad: 0, meat: 0, bacon: 0, cheese: 0 },
+  ingredients : null,
   price       : 15
 };
 
@@ -15,6 +15,8 @@ const INGREDIENT_PRICES = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case actionTypes.GET_INGREDIENTS:
+      return { ...state, ingredients: action.data };
     case actionTypes.ADD_INGREDIENT:
       return {
         ...state,

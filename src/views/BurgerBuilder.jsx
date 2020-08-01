@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import axios from '../axios';
 import { connect } from 'react-redux';
 
-// Constants
-import * as actionTypes from '../store/actions';
+// Redux
+import { ingredientsActions } from '../store/actions/actions';
 
 // Components
 import Burger from '../components/Burger/Burger';
@@ -24,8 +24,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAddIngredient    : type => dispatch({ type: actionTypes.ADD_INGREDIENT, ingredientType: type }),
-    onRemoveIngredient : type => dispatch({ type: actionTypes.REMOVE_INGREDIENT, ingredientType: type })
+    onAddIngredient    : type => dispatch(ingredientsActions.addIngredient(type)),
+    onRemoveIngredient : type => dispatch(ingredientsActions.subIngredient(type)),
+    onGetIngredients   : () => dispatch(ingredientsActions.getIngredients())
   };
 };
 
@@ -38,12 +39,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       };
 
       componentDidMount() {
-        // axios
-        //   .get('/ingredients.json')
-        //   .then(response => {
-        //     this.setState({ ingredients: response.data });
-        //   })
-        //   .catch(err => console.log(err));
+        this.props.onGetIngredients();
       }
 
       updatePurchaseState = () => {

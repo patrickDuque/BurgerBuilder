@@ -4,7 +4,7 @@ import axios from '../axios';
 import { connect } from 'react-redux';
 
 // Constants
-import * as actionTypes from '../store/actions';
+import { ingredientsActions } from '../store/actions/actions';
 
 // Components
 import CustomButton from '../components/UI/CustomButton';
@@ -20,7 +20,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onResetIngredients : () => dispatch({ type: actionTypes.RESET_INGREDIENTS })
+    onResetIngredients : () => dispatch(ingredientsActions.resetIngredients())
   };
 };
 
@@ -59,12 +59,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         .post('/orders.json', data)
         .then(res => {
           console.log(res);
+          this.props.onResetIngredients();
+          this.props.history.push('/');
         })
         .catch(err => {
           console.log(err);
         });
-      this.props.onResetIngredients();
-      this.props.history.push('/');
     };
 
     onChangeOrderHandler = e => {
