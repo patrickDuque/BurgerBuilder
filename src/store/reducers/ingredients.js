@@ -25,6 +25,7 @@ const reducer = (state = initialState, action) => {
       break;
     case actionTypes.GET_INGREDIENTS:
       newState.ingredients = action.data;
+      newState.ordered = false;
       newState.loading = false;
       newState.error = null;
       newState.price = 15;
