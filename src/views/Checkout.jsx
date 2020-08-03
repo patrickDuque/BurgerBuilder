@@ -8,9 +8,10 @@ import ContactData from './ContactData';
 import { Route } from 'react-router-dom';
 
 const mapStateToProps = state => {
+  const { ingredients, price } = state.ingredients;
   return {
-    ingredients : state.ingredients,
-    price       : state.price
+    ingredients,
+    price
   };
 };
 

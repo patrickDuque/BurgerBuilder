@@ -4,7 +4,7 @@ import axios from '../axios';
 import { connect } from 'react-redux';
 
 // Redux
-import { ingredientsActions } from '../store/actions/actions';
+import { ingredientsActions } from '../store/actions/ingredients';
 
 // Components
 import Burger from '../components/Burger/Burger';
@@ -16,10 +16,12 @@ import Spinner from '../components/UI/Spinner';
 import withErrorHandler from '../hoc/withErrorHandler';
 
 const mapStateToProps = state => {
-  const { ingredients, price } = state;
+  const { ingredients, price, loading, ordered } = state.ingredients;
   return {
     ingredients,
-    price
+    price,
+    loading,
+    ordered
   };
 };
 
@@ -27,7 +29,8 @@ const mapDispatchToProps = dispatch => {
   return {
     onAddIngredient    : type => dispatch(ingredientsActions.addIngredient(type)),
     onRemoveIngredient : type => dispatch(ingredientsActions.subIngredient(type)),
-    onGetIngredients   : () => dispatch(ingredientsActions.getIngredients())
+    onGetIngredients   : () => dispatch(ingredientsActions.getIngredients()),
+    onOrder            : () => dispatch(ingredientsActions.goToOrder())
   };
 };
 
@@ -35,8 +38,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
   withErrorHandler(
     class extends Component {
       state = {
-        order   : false,
-        loading : false
+        order : false
       };
 
       componentDidMount() {
@@ -53,6 +55,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       };
 
       continueToCheckoutHandler = () => {
+        this.props.onOrder();
         this.props.history.push('/checkout');
       };
 
@@ -80,7 +83,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
           />
         );
 
-        if (this.state.loading) {
+        if (this.props.loading) {
           orderSummary = <Spinner />;
         }
 

@@ -1,10 +1,10 @@
 // Dependencies
 import React, { Component } from 'react';
-import axios from '../axios';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 // Constants
-import { ingredientsActions } from '../store/actions/actions';
+import { ingredientsActions } from '../store/actions/ingredients';
 
 // Components
 import CustomButton from '../components/UI/CustomButton';
@@ -12,15 +12,19 @@ import Spinner from '../components/UI/Spinner';
 import CustomInput from '../components/UI/CustomInput';
 
 const mapStateToProps = state => {
+  const { ingredients, price, loading, ordered } = state.ingredients;
   return {
-    ingredients : state.ingredients,
-    price       : state.price
+    ingredients,
+    price,
+    loading,
+    ordered
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onResetIngredients : () => dispatch(ingredientsActions.getIngredients())
+    onResetIngredients : () => dispatch(ingredientsActions.getIngredients()),
+    onSendOrder        : data => dispatch(ingredientsActions.postOrder(data))
   };
 };
 
@@ -33,13 +37,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         town        : '',
         city        : '',
         phoneNumber : ''
-      },
-      loading   : false
+      }
     };
 
     submitOrderHandler = e => {
       e.preventDefault();
-      this.setState({ loading: true });
       const time = new Date();
       const data = {
         ingredients : this.props.ingredients,
@@ -55,16 +57,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         },
         timeOrdered : `${time.getHours()}:${time.getMinutes()}`
       };
-      axios
-        .post('/orders.json', data)
-        .then(res => {
-          console.log(res);
-          this.props.onResetIngredients();
-          this.props.history.push('/');
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      this.props.onSendOrder(data);
     };
 
     onChangeOrderHandler = e => {
@@ -72,8 +65,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(
     };
 
     render() {
+      let redirect = this.props.ordered ? <Redirect to='/' /> : null;
       let data = <Spinner />;
-      if (!this.state.loading) {
+      if (!this.props.loading) {
         data = (
           <form onSubmit={this.submitOrderHandler}>
             <CustomInput
@@ -122,6 +116,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       }
       return (
         <div id='ContactData'>
+          {redirect}
           <h4>Enter your contact details</h4>
           {data}
         </div>

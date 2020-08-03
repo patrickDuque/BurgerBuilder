@@ -1,25 +1,26 @@
 import React, { Component } from 'react';
 import Order from '../components/Order/Order';
 import Spinner from '../components/UI/Spinner';
-import { ingredientsActions } from '../store/actions/actions';
 import { connect } from 'react-redux';
+import { ordersAction } from '../store/actions/orders';
 
 const mapStateToProps = state => {
+  const { orders, loading } = state.orders;
   return {
-    orders : state.orders
+    orders,
+    loading
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onGetData : () => dispatch(ingredientsActions.getOrders())
+    onGetData : () => dispatch(ordersAction.getOrders())
   };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   class extends Component {
     componentDidMount() {
-      this.setState({ loading: true });
       this.props.onGetData();
     }
     render() {
