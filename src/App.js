@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import BurgerBuilder from './views/BurgerBuilder';
 import Checkout from './views/Checkout';
 import Orders from './views/Orders';
+import SignIn from './views/SignIn';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
       <Layout>
         <Switch>
           <Route path='/checkout' component={Checkout} />
+          <Route path='/signin' component={SignIn} />
           <Route path='/orders' component={Orders} />
           <Route path='/' component={BurgerBuilder} exact />
         </Switch>

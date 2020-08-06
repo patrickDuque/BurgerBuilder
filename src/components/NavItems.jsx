@@ -9,12 +9,12 @@ export default props => {
           Burger Builder
         </NavLink>
       </li>
-      {/* <li className='NavItem'>
+      {/* {/* <li className='NavItem'>
         <NavLink to='/checkout'>Checkout</NavLink>
-      </li>
-      <li className='NavItem'>
-        <NavLink to='/orders'>Orders</NavLink>
       </li> */}
+      <li className='NavItem'>
+        <NavLink to='/signin'>Sign In</NavLink>
+      </li>
     </ul>
   );
 };

@@ -11,3 +11,6 @@ export const POST_ORDER = 'POST_ORDER';
 export const POST_ORDER_START = 'POST_ORDER_START';
 export const POST_ORDER_FAIL = 'POST_ORDER_FAIL';
 export const GO_TO_ORDER = 'GO_TO_ORDER';
+export const AUTH_START = 'AUTH_START';
+export const AUTH_SUCCESS = 'AUTH_SUCCESS';
+export const AUTH_FAIL = 'AUTH_FAIL';
