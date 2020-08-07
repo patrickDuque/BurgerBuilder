@@ -17,7 +17,8 @@ import SignUp from './views/SignUp';
 
 const mapStateToProps = state => {
   return {
-    ingredients : state.ingredients.ingredients === null
+    ingredients : state.ingredients.ingredients === null,
+    user        : state.auth.user
   };
 };
 
@@ -29,17 +30,34 @@ const mapDispatchToProps = dispatch => {
 
 function App(props) {
   useEffect(() => props.onAutoLogin(), []);
+
+  let routes = (
+    <Switch>
+      <Route path='/signin' component={SignIn} />
+      <Route path='/signup' component={SignUp} />
+      <Route path='/checkout' component={Checkout} />
+      <Route path='/' component={BurgerBuilder} exact />
+      <Redirect to='/' />
+    </Switch>
+  );
+
+  if (props.user) {
+    routes = (
+      <Switch>
+        <Route path='/checkout' component={Checkout} />
+        <Route path='/orders' component={Orders} />
+        <Route path='/signin' component={SignIn} />
+        <Route path='/' component={BurgerBuilder} exact />
+        <Redirect to='/' />
+      </Switch>
+    );
+  }
+
   return (
     <BrowserRouter>
       <Layout>
         {props.ingredients ? <Redirect to='/' /> : null}
-        <Switch>
-          <Route path='/checkout' component={Checkout} />
-          <Route path='/signin' component={SignIn} />
-          <Route path='/signup' component={SignUp} />
-          <Route path='/orders' component={Orders} />
-          <Route path='/' component={BurgerBuilder} exact />
-        </Switch>
+        {routes}
       </Layout>
     </BrowserRouter>
   );

@@ -18,6 +18,7 @@ const mapStateToProps = state => {
     price,
     loading,
     ordered,
+    user        : state.auth.user,
     token       : state.auth.token
   };
 };
@@ -56,10 +57,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(
           },
           phoneNumber : this.state.orderForm.phoneNumber
         },
-        timeOrdered : `${time.getHours()}:${time.getMinutes()}`
+        timeOrdered : `${time.getHours()}:${time.getMinutes()}`,
+        userId      : localStorage.getItem('userId')
       };
-      if (this.props.token) {
-        this.props.onSendOrder(data, this.props.token);
+      if (this.props.user) {
+        this.props.onSendOrder(data, localStorage.getItem('token'));
       } else {
         this.props.history.push('/signin');
       }
@@ -115,7 +117,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
               label='Contact Number'
               id='phoneNumber'
             />
-            <CustomButton type='Success'>{this.props.token ? 'ORDER' : 'SIGN IN'}</CustomButton>
+            <CustomButton type='Success'>{this.props.user ? 'ORDER' : 'SIGN IN'}</CustomButton>
           </form>
         );
       }

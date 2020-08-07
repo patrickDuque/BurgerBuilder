@@ -14,12 +14,10 @@ export const signUp = signUp => dispatch => {
       authData
     )
     .then(res => {
-      console.log(res);
       dispatch({ type: actionTypes.SIGNUP_SUCCESS, auth: res.data });
       dispatch(checkTokenTimeout(res.data.expiresIn));
     })
     .catch(err => {
-      console.log(err.response.data.error);
       dispatch({ type: actionTypes.SIGNUP_FAIL, error: err.response.data.error });
     });
 };
@@ -37,7 +35,6 @@ export const signIn = login => dispatch => {
       authData
     )
     .then(res => {
-      console.log(res);
       localStorage.setItem('token', res.data.idToken);
       const expirationDate = new Date(new Date().getTime() + +res.data.expiresIn * 1000);
       localStorage.setItem('expirationDate', expirationDate);
@@ -67,7 +64,6 @@ export const logout = () => {
 
 export const authCheck = () => dispatch => {
   const token = localStorage.getItem('token');
-  console.log(token);
   if (!token) {
     dispatch(logout());
   } else {

@@ -17,13 +17,24 @@ const mapDispatchToProps = dispatch => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(props => {
   let links = (
-    <NavLink to='/signin' onClick={props.onLogout}>
-      Logout
-    </NavLink>
+    <React.Fragment>
+      <li className='NavItem'>
+        <NavLink to='/orders'>Orders</NavLink>
+      </li>
+      <li className='NavItem'>
+        <NavLink to='/signin' onClick={props.onLogout}>
+          Logout
+        </NavLink>
+      </li>
+    </React.Fragment>
   );
 
   if (!props.user) {
-    links = <NavLink to='/signin'>LogIn/Register</NavLink>;
+    links = (
+      <li className='NavItem'>
+        <NavLink to='/signin'>LogIn/Register</NavLink>
+      </li>
+    );
   }
 
   return (
@@ -33,7 +44,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(props => {
           Burger Builder
         </NavLink>
       </li>
-      <li className='NavItem'>{links}</li>
+      {links}
     </ul>
   );
 });

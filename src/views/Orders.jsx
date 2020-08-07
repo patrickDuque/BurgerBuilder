@@ -11,8 +11,7 @@ const mapStateToProps = state => {
   const { orders, loading } = state.orders;
   return {
     orders,
-    loading,
-    token   : state.auth.token
+    loading
   };
 };
 
@@ -25,7 +24,7 @@ const mapDispatchToProps = dispatch => {
 export default connect(mapStateToProps, mapDispatchToProps)(
   class extends Component {
     componentDidMount() {
-      this.props.onGetOrders(this.props.token);
+      this.props.onGetOrders(localStorage.getItem('token'));
     }
     render() {
       return (
