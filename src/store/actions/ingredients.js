@@ -27,10 +27,10 @@ const postOrderFail = error => {
 };
 
 export const ingredientsActions = {
-  getIngredients : token => dispatch => {
+  getIngredients : () => dispatch => {
     dispatch(getIngredientsStart());
     axios
-      .get('/ingredients.json?auth=' + token)
+      .get('/ingredients.json')
       .then(result => {
         dispatch(getIngredients(result.data));
       })

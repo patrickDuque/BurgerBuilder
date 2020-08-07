@@ -1,25 +1,38 @@
-import React from 'react';
+// Libraries
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import * as actions from './store/actions/auth';
+
+// SASS
 import './scss/App.scss';
+
+// Components
 import Layout from './components/Layout';
 import BurgerBuilder from './views/BurgerBuilder';
 import Checkout from './views/Checkout';
 import Orders from './views/Orders';
 import SignIn from './views/SignIn';
 import SignUp from './views/SignUp';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
 
 const mapStateToProps = state => {
   return {
-    user : state.auth.user
+    ingredients : state.ingredients.ingredients === null
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onAutoLogin : () => dispatch(actions.authCheck())
   };
 };
 
 function App(props) {
+  useEffect(() => props.onAutoLogin(), []);
   return (
     <BrowserRouter>
       <Layout>
-        {!props.user ? <Redirect to='/signin' /> : null}
+        {props.ingredients ? <Redirect to='/' /> : null}
         <Switch>
           <Route path='/checkout' component={Checkout} />
           <Route path='/signin' component={SignIn} />
@@ -32,4 +45,4 @@ function App(props) {
   );
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

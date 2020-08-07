@@ -30,7 +30,7 @@ const mapDispatchToProps = dispatch => {
   return {
     onAddIngredient    : type => dispatch(ingredientsActions.addIngredient(type)),
     onRemoveIngredient : type => dispatch(ingredientsActions.subIngredient(type)),
-    onGetIngredients   : token => dispatch(ingredientsActions.getIngredients(token)),
+    onGetIngredients   : () => dispatch(ingredientsActions.getIngredients()),
     onOrder            : () => dispatch(ingredientsActions.goToOrder())
   };
 };
@@ -43,7 +43,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       };
 
       componentDidMount() {
-        this.props.onGetIngredients(this.props.token);
+        this.props.onGetIngredients();
       }
 
       updatePurchaseState = () => {

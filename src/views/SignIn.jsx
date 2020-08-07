@@ -15,9 +15,10 @@ import withErrorHandler from '../hoc/withErrorHandler';
 
 const mapStateToProps = state => {
   return {
-    loading : state.auth.loading,
-    error   : state.auth.error,
-    user    : state.auth.user
+    loading     : state.auth.loading,
+    error       : state.auth.error,
+    user        : state.auth.user,
+    ingredients : state.ingredients.ingredients
   };
 };
 
@@ -48,6 +49,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       };
 
       render() {
+        let ingredientsArr = [];
+        if (this.props.ingredients) {
+          ingredientsArr = Object.keys(this.props.ingredients).map(igKey => [
+            ...Array(this.props.ingredients[igKey])
+          ]);
+        }
+
         let form = <Spinner />;
         if (!this.props.loading) {
           form = (
@@ -74,9 +82,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             </form>
           );
         }
+
         return (
           <div id='SignIn'>
-            {this.props.user ? <Redirect to='/' /> : null}
+            {this.props.user ? <Redirect to={ingredientsArr.flat().length === 0 ? '/' : '/checkout'} /> : null}
             {form}
             {this.props.error ? this.props.error : null}
             <p>

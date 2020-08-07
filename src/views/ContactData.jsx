@@ -58,7 +58,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         },
         timeOrdered : `${time.getHours()}:${time.getMinutes()}`
       };
-      this.props.onSendOrder(data, this.props.token);
+      if (this.props.token) {
+        this.props.onSendOrder(data, this.props.token);
+      } else {
+        this.props.history.push('/signin');
+      }
     };
 
     onChangeOrderHandler = e => {
@@ -111,7 +115,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
               label='Contact Number'
               id='phoneNumber'
             />
-            <CustomButton type='Success'>ORDER</CustomButton>
+            <CustomButton type='Success'>{this.props.token ? 'ORDER' : 'SIGN IN'}</CustomButton>
           </form>
         );
       }
