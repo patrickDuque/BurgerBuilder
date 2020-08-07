@@ -1,5 +1,5 @@
 // Libraries
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import * as actions from './store/actions/auth';
@@ -11,9 +11,10 @@ import './scss/App.scss';
 import Layout from './components/Layout';
 import BurgerBuilder from './views/BurgerBuilder';
 import Checkout from './views/Checkout';
-import Orders from './views/Orders';
 import SignIn from './views/SignIn';
-import SignUp from './views/SignUp';
+// Lazy Loading
+const Orders = React.lazy(() => import('./views/Orders'));
+const SignUp = React.lazy(() => import('./views/SignUp'));
 
 const mapStateToProps = state => {
   return {
@@ -34,7 +35,14 @@ function App(props) {
   let routes = (
     <Switch>
       <Route path='/signin' component={SignIn} />
-      <Route path='/signup' component={SignUp} />
+      <Route
+        path='/signup'
+        render={() => (
+          <Suspense fallback={<div>...loading</div>}>
+            <SignUp />
+          </Suspense>
+        )}
+      />
       <Route path='/checkout' component={Checkout} />
       <Route path='/' component={BurgerBuilder} exact />
       <Redirect to='/' />
@@ -45,7 +53,14 @@ function App(props) {
     routes = (
       <Switch>
         <Route path='/checkout' component={Checkout} />
-        <Route path='/orders' component={Orders} />
+        <Route
+          path='/orders'
+          render={() => (
+            <Suspense fallback={<div>...loading</div>}>
+              <Orders />
+            </Suspense>
+          )}
+        />
         <Route path='/signin' component={SignIn} />
         <Route path='/' component={BurgerBuilder} exact />
         <Redirect to='/' />
