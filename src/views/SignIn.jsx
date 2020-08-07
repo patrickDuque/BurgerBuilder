@@ -5,14 +5,23 @@ import CustomInput from '../components/UI/CustomInput';
 import CustomButton from '../components/UI/CustomButton';
 import withErrorHandler from '../hoc/withErrorHandler';
 import axios from '../axios';
+import { Link } from 'react-router-dom';
+import Spinner from '../components/UI/Spinner';
 
-const mapDispatchToProps = dispatch => {
+const mapStateToProps = state => {
   return {
-    onLogIn : user => dispatch(authActions.authActions(user))
+    loading : state.auth.loading,
+    error   : state.auth.error
   };
 };
 
-export default connect(null, mapDispatchToProps)(
+const mapDispatchToProps = dispatch => {
+  return {
+    onLogIn : user => dispatch(authActions.signIn(user))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(
   withErrorHandler(
     class extends Component {
       state = {
@@ -29,13 +38,13 @@ export default connect(null, mapDispatchToProps)(
 
       onSubmitLogIn = e => {
         e.preventDefault();
-        console.log(this.state.signIn);
         this.props.onLogIn(this.state.signIn);
       };
 
       render() {
-        return (
-          <div id='SignIn'>
+        let form = <Spinner />;
+        if (!this.props.loading) {
+          form = (
             <form onSubmit={this.onSubmitLogIn}>
               <CustomInput
                 onChange={this.onChangeOrderHandler}
@@ -57,6 +66,15 @@ export default connect(null, mapDispatchToProps)(
               />
               <CustomButton type='Success'>SIGN IN</CustomButton>
             </form>
+          );
+        }
+        return (
+          <div id='SignIn'>
+            {form}
+            {this.props.error ? this.props.error : null}
+            <p>
+              Doesn't have an account yet? <Link to='/signup'>Register</Link> here!
+            </p>
           </div>
         );
       }

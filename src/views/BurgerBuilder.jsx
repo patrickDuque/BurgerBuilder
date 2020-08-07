@@ -21,7 +21,8 @@ const mapStateToProps = state => {
     ingredients,
     price,
     loading,
-    ordered
+    ordered,
+    token       : state.auth.token
   };
 };
 
@@ -29,7 +30,7 @@ const mapDispatchToProps = dispatch => {
   return {
     onAddIngredient    : type => dispatch(ingredientsActions.addIngredient(type)),
     onRemoveIngredient : type => dispatch(ingredientsActions.subIngredient(type)),
-    onGetIngredients   : () => dispatch(ingredientsActions.getIngredients()),
+    onGetIngredients   : token => dispatch(ingredientsActions.getIngredients(token)),
     onOrder            : () => dispatch(ingredientsActions.goToOrder())
   };
 };
@@ -42,7 +43,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       };
 
       componentDidMount() {
-        this.props.onGetIngredients();
+        this.props.onGetIngredients(this.props.token);
       }
 
       updatePurchaseState = () => {

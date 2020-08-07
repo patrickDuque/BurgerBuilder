@@ -8,20 +8,21 @@ const mapStateToProps = state => {
   const { orders, loading } = state.orders;
   return {
     orders,
-    loading
+    loading,
+    token   : state.auth.token
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onGetData : () => dispatch(ordersAction.getOrders())
+    onGetOrders : token => dispatch(ordersAction.getOrders(token))
   };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   class extends Component {
     componentDidMount() {
-      this.props.onGetData();
+      this.props.onGetOrders(this.props.token);
     }
     render() {
       return (

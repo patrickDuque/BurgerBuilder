@@ -1,7 +1,21 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as actions from '../store/actions/auth';
 
-export default props => {
+const mapStateToProps = state => {
+  return {
+    user : state.auth.user
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onLogout : () => dispatch(actions.logout())
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(props => {
   return (
     <ul id='NavItems'>
       <li className='NavItem'>
@@ -12,9 +26,17 @@ export default props => {
       {/* {/* <li className='NavItem'>
         <NavLink to='/checkout'>Checkout</NavLink>
       </li> */}
-      <li className='NavItem'>
-        <NavLink to='/signin'>Sign In</NavLink>
-      </li>
+      {props.user ? (
+        <li className='NavItem'>
+          <NavLink to='/signin' onClick={props.onLogout}>
+            Logout
+          </NavLink>
+        </li>
+      ) : (
+        <li className='NavItem'>
+          <NavLink to='/signin'>LogIn/Register</NavLink>
+        </li>
+      )}
     </ul>
   );
-};
+});

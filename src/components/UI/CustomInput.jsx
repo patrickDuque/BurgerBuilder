@@ -6,7 +6,6 @@ export default props => {
   if (props.inputType === 'textarea') {
     inputElement = <textarea {...props} />;
   }
-  console.log(props);
 
   return (
     <div id='CustomInput'>
