@@ -16,27 +16,28 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(props => {
-  return (
-    <ul id='NavItems'>
+  let links = (
+    <React.Fragment>
       <li className='NavItem'>
         <NavLink to='/' exact>
           Burger Builder
         </NavLink>
       </li>
-      {/* {/* <li className='NavItem'>
-        <NavLink to='/checkout'>Checkout</NavLink>
-      </li> */}
-      {props.user ? (
-        <li className='NavItem'>
-          <NavLink to='/signin' onClick={props.onLogout}>
-            Logout
-          </NavLink>
-        </li>
-      ) : (
-        <li className='NavItem'>
-          <NavLink to='/signin'>LogIn/Register</NavLink>
-        </li>
-      )}
-    </ul>
+      <li className='NavItem'>
+        <NavLink to='/signin' onClick={props.onLogout}>
+          Logout
+        </NavLink>
+      </li>
+    </React.Fragment>
   );
+
+  if (!props.user) {
+    links = (
+      <li className='NavItem'>
+        <NavLink to='/signin'>LogIn/Register</NavLink>
+      </li>
+    );
+  }
+
+  return <ul id='NavItems'>{links}</ul>;
 });

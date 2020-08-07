@@ -1,8 +1,11 @@
+// Libraries
 import React, { Component } from 'react';
-import Order from '../components/Order/Order';
-import Spinner from '../components/UI/Spinner';
 import { connect } from 'react-redux';
 import { ordersAction } from '../store/actions/orders';
+
+// Components
+import Spinner from '../components/UI/Spinner';
+import Order from '../components/Order/Order';
 
 const mapStateToProps = state => {
   const { orders, loading } = state.orders;

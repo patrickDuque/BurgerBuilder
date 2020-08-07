@@ -1,17 +1,23 @@
+// Libraries
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import axios from '../axios';
+import { Link, Redirect } from 'react-router-dom';
+
+// Store
 import * as authActions from '../store/actions/auth';
+
+// Components
 import CustomInput from '../components/UI/CustomInput';
 import CustomButton from '../components/UI/CustomButton';
-import withErrorHandler from '../hoc/withErrorHandler';
-import axios from '../axios';
-import { Link } from 'react-router-dom';
 import Spinner from '../components/UI/Spinner';
+import withErrorHandler from '../hoc/withErrorHandler';
 
 const mapStateToProps = state => {
   return {
     loading : state.auth.loading,
-    error   : state.auth.error
+    error   : state.auth.error,
+    user    : state.auth.user
   };
 };
 
@@ -70,6 +76,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         }
         return (
           <div id='SignIn'>
+            {this.props.user ? <Redirect to='/' /> : null}
             {form}
             {this.props.error ? this.props.error : null}
             <p>

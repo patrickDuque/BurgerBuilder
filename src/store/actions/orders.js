@@ -14,10 +14,10 @@ const getOrdersFail = error => {
 };
 
 export const ordersAction = {
-  getOrders : () => dispatch => {
+  getOrders : (token) => dispatch => {
     dispatch(getOrdersStart());
     axios
-      .get('/orders.json')
+      .get('/orders.json?auth=' + token)
       .then(result => {
         dispatch(getOrders(result.data));
       })

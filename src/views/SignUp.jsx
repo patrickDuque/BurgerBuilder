@@ -1,11 +1,16 @@
+// Libraries
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import axios from '../axios';
+
+// Store
 import * as authActions from '../store/actions/auth';
+
+// Components
 import CustomInput from '../components/UI/CustomInput';
 import CustomButton from '../components/UI/CustomButton';
 import withErrorHandler from '../hoc/withErrorHandler';
-import axios from '../axios';
-import { Link } from 'react-router-dom';
 import Spinner from '../components/UI/Spinner';
 
 const mapStateToProps = state => {

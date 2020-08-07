@@ -17,14 +17,15 @@ const mapStateToProps = state => {
     ingredients,
     price,
     loading,
-    ordered
+    ordered,
+    token       : state.auth.token
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onResetIngredients : () => dispatch(ingredientsActions.getIngredients()),
-    onSendOrder        : data => dispatch(ingredientsActions.postOrder(data))
+    onSendOrder        : (data, token) => dispatch(ingredientsActions.postOrder(data, token))
   };
 };
 
@@ -57,7 +58,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
         },
         timeOrdered : `${time.getHours()}:${time.getMinutes()}`
       };
-      this.props.onSendOrder(data);
+      this.props.onSendOrder(data, this.props.token);
     };
 
     onChangeOrderHandler = e => {

@@ -42,10 +42,10 @@ export const ingredientsActions = {
   subIngredient  : type => {
     return { type: actionTypes.REMOVE_INGREDIENT, ingredientType: type };
   },
-  postOrder      : data => dispatch => {
+  postOrder      : (data, token) => dispatch => {
     dispatch(postOrderStart());
     axios
-      .post('/orders.json', data)
+      .post('/orders.json?auth=' + token, data)
       .then(res => {
         dispatch(postOrder());
         UIkit.notification({

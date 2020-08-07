@@ -11,7 +11,7 @@ export default props => {
     <div id='CustomInput'>
       <label htmlFor={props.id}>{props.label}</label>
       {inputElement}
-      {props.rules.value ? <h6 className='Error'>{props.rules.message}</h6> : null}
+      {props.rules ? <h6 className='Error'>{props.rules.message}</h6> : null}
     </div>
   );
 };
