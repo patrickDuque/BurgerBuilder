@@ -12,6 +12,7 @@ import Layout from './components/Layout';
 import BurgerBuilder from './views/BurgerBuilder';
 import Checkout from './views/Checkout';
 import SignIn from './views/SignIn';
+import Spinner from './components/UI/Spinner';
 
 // Lazy Loading
 const Orders = React.lazy(() => import('./views/Orders'));
@@ -43,7 +44,7 @@ function App(props) {
       <Route
         path='/signup'
         render={() => (
-          <Suspense fallback={<div>...loading</div>}>
+          <Suspense fallback={<Spinner />}>
             <SignUp />
           </Suspense>
         )}
@@ -61,7 +62,7 @@ function App(props) {
         <Route
           path='/orders'
           render={() => (
-            <Suspense fallback={<div>...loading</div>}>
+            <Suspense fallback={<Spinner />}>
               <Orders />
             </Suspense>
           )}
