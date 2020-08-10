@@ -1,5 +1,5 @@
 // Libraries
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import axios from '../axios';
@@ -27,63 +27,48 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  withErrorHandler(
-    class extends Component {
-      state = {
-        signUp : {
-          email    : '',
-          password : ''
-        },
-        error  : { message: 'Required', value: true }
-      };
+  withErrorHandler(props => {
+    const [ email, setEmail ] = useState('');
+    const [ password, setPassword ] = useState('');
+    const [ error ] = useState({ message: 'Required' });
 
-      onChangeOrderHandler = e => {
-        this.setState({ signUp: { ...this.state.signUp, [e.target.id]: e.target.value } });
-      };
+    const onSubmitLogIn = e => {
+      e.preventDefault();
+      props.onSignUp({ email, password });
+    };
 
-      onSubmitLogIn = e => {
-        e.preventDefault();
-        this.props.onSignUp(this.state.signUp);
-      };
-
-      render() {
-        let form = <Spinner />;
-        if (!this.props.loading) {
-          form = (
-            <form onSubmit={this.onSubmitLogIn}>
-              <CustomInput
-                onChange={this.onChangeOrderHandler}
-                value={this.state.signUp.email}
-                type='email'
-                name='email'
-                label='Email'
-                id='email'
-                rules={this.state.error}
-              />
-              <CustomInput
-                onChange={this.onChangeOrderHandler}
-                value={this.state.signUp.password}
-                type='password'
-                name='password'
-                label='Password'
-                id='password'
-                rules={this.state.error}
-              />
-              <CustomButton type='Success'>SIGN UP</CustomButton>
-            </form>
-          );
-        }
-        return (
-          <div id='SignIn'>
-            {form}
-            {this.props.error ? this.props.error : null}
-            <p>
-              Already have an account? <Link to='/signin'>Log In</Link> here!
-            </p>
-          </div>
-        );
-      }
-    },
-    axios
-  )
+    let form = <Spinner />;
+    if (!props.loading) {
+      form = (
+        <form onSubmit={onSubmitLogIn}>
+          <CustomInput
+            onChange={e => setEmail(e.target.value)}
+            value={email}
+            type='email'
+            name='email'
+            label='Email'
+            rules={error}
+          />
+          <CustomInput
+            onChange={e => setPassword(e.target.value)}
+            value={password}
+            type='password'
+            name='password'
+            label='Password'
+            rules={error}
+          />
+          <CustomButton type='Success'>SIGN UP</CustomButton>
+        </form>
+      );
+    }
+    return (
+      <div id='SignIn'>
+        {form}
+        {props.error ? props.error : null}
+        <p>
+          Already have an account? <Link to='/signin'>Log In</Link> here!
+        </p>
+      </div>
+    );
+  }, axios)
 );

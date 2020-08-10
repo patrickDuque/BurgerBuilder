@@ -1,5 +1,5 @@
 // Libraries
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { ordersAction } from '../store/actions/orders';
 
@@ -21,17 +21,14 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  class extends Component {
-    componentDidMount() {
-      this.props.onGetOrders(localStorage.getItem('token'));
-    }
-    render() {
-      return (
-        <div style={{ padding: '10px' }}>
-          {this.props.orders ? this.props.orders.map(order => <Order key={order.id} order={order} />) : <Spinner />}
-        </div>
-      );
-    }
-  }
-);
+export default connect(mapStateToProps, mapDispatchToProps)(props => {
+  useEffect(() => {
+    props.onGetOrders(localStorage.getItem('token'));
+  }, []);
+
+  return (
+    <div style={{ padding: '10px' }}>
+      {props.orders ? props.orders.map(order => <Order key={order.id} order={order} />) : <Spinner />}
+    </div>
+  );
+});

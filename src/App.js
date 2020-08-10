@@ -12,6 +12,7 @@ import Layout from './components/Layout';
 import BurgerBuilder from './views/BurgerBuilder';
 import Checkout from './views/Checkout';
 import SignIn from './views/SignIn';
+
 // Lazy Loading
 const Orders = React.lazy(() => import('./views/Orders'));
 const SignUp = React.lazy(() => import('./views/SignUp'));
@@ -30,7 +31,11 @@ const mapDispatchToProps = dispatch => {
 };
 
 function App(props) {
-  useEffect(() => props.onAutoLogin(), []);
+  useEffect(() => {
+    props.onAutoLogin();
+  }, []);
+
+  console.log('APP');
 
   let routes = (
     <Switch>

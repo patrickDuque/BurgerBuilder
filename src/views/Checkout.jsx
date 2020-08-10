@@ -1,5 +1,5 @@
 // Dependencies
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 // Components
@@ -16,33 +16,26 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(
-  class extends Component {
-    cancelCheckoutHandler = () => {
-      this.props.history.goBack();
-    };
+export default connect(mapStateToProps)(props => {
+  const cancelCheckoutHandler = () => {
+    props.history.goBack();
+  };
 
-    continueCheckoutHandler = () => {
-      this.props.user
-        ? this.props.history.replace(this.props.match.path + '/contact-data')
-        : this.props.history.push('/signup');
-    };
-
-    render() {
-      return (
-        <React.Fragment>
-          {this.props.ingredients ? (
-            <CheckoutSummary
-              continue={this.continueCheckoutHandler}
-              cancel={this.cancelCheckoutHandler}
-              ingredients={this.props.ingredients}
-            />
-          ) : (
-            <Redirect to='/' />
-          )}
-          <Route path={this.props.match.path + '/contact-data'} component={ContactData} />
-        </React.Fragment>
-      );
-    }
-  }
-);
+  const continueCheckoutHandler = () => {
+    props.user ? props.history.replace(props.match.path + '/contact-data') : props.history.push('/signup');
+  };
+  return (
+    <React.Fragment>
+      {props.ingredients ? (
+        <CheckoutSummary
+          continue={continueCheckoutHandler}
+          cancel={cancelCheckoutHandler}
+          ingredients={props.ingredients}
+        />
+      ) : (
+        <Redirect to='/' />
+      )}
+      <Route path={props.match.path + '/contact-data'} component={ContactData} />
+    </React.Fragment>
+  );
+});

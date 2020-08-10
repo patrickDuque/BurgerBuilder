@@ -1,5 +1,5 @@
 // Dependencies
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from '../axios';
 import { connect } from 'react-redux';
 
@@ -36,83 +36,80 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  withErrorHandler(
-    class extends Component {
-      state = {
-        order : false
-      };
+  withErrorHandler(props => {
+    // State
+    const [ order, setOrder ] = useState(false);
 
-      componentDidMount() {
-        this.props.onGetIngredients();
-      }
+    // Effect
+    useEffect(() => {
+      props.onGetIngredients();
+    }, []);
 
-      updatePurchaseState = () => {
-        const sum = Object.values(this.props.ingredients).reduce((a, b) => a + b, 0);
-        return sum > 0;
-      };
+    // Handlers
+    const updatePurchaseState = () => {
+      const sum = Object.values(props.ingredients).reduce((a, b) => a + b, 0);
+      return sum > 0;
+    };
 
-      orderHandler = () => {
-        this.setState({ order: true });
-      };
+    const orderHandler = () => {
+      setOrder(true);
+    };
 
-      continueToCheckoutHandler = () => {
-        this.props.onOrder();
-        this.props.history.push('/checkout');
-      };
+    const continueToCheckoutHandler = () => {
+      props.onOrder();
+      props.history.push('/checkout');
+    };
 
-      removeModalHandler = () => {
-        this.setState({ order: false });
-      };
+    const removeModalHandler = () => {
+      setOrder(false);
+    };
 
-      render() {
-        const disabledInfoSub = { ...this.props.ingredients };
-        for (let key in disabledInfoSub) {
-          disabledInfoSub[key] = disabledInfoSub[key] <= 0;
-        }
+    // Variables
+    const disabledInfoSub = { ...props.ingredients };
+    for (let key in disabledInfoSub) {
+      disabledInfoSub[key] = disabledInfoSub[key] <= 0;
+    }
 
-        const disabledInfoAdd = { ...this.props.ingredients };
-        for (let key in disabledInfoAdd) {
-          disabledInfoAdd[key] = disabledInfoAdd[key] >= 4;
-        }
+    const disabledInfoAdd = { ...props.ingredients };
+    for (let key in disabledInfoAdd) {
+      disabledInfoAdd[key] = disabledInfoAdd[key] >= 4;
+    }
 
-        let orderSummary = (
-          <OrderSummary
-            cancel={this.removeModalHandler}
-            price={this.props.price}
-            ingredients={this.props.ingredients}
-            continue={this.continueToCheckoutHandler}
+    let orderSummary = (
+      <OrderSummary
+        cancel={removeModalHandler}
+        price={props.price}
+        ingredients={props.ingredients}
+        continue={continueToCheckoutHandler}
+      />
+    );
+
+    if (props.loading) {
+      orderSummary = <Spinner />;
+    }
+
+    let burger = <Spinner />;
+
+    if (props.ingredients) {
+      burger = (
+        <Aux>
+          <Burger ingredients={props.ingredients} />
+          <Modal show={order} removeModal={removeModalHandler}>
+            {orderSummary}
+          </Modal>
+          <BuildControls
+            price={props.price}
+            disabledSub={disabledInfoSub}
+            disabledAdd={disabledInfoAdd}
+            ingredientAdd={props.onAddIngredient}
+            ingredientSubtract={props.onRemoveIngredient}
+            purchaseable={updatePurchaseState()}
+            order={orderHandler}
           />
-        );
+        </Aux>
+      );
+    }
 
-        if (this.props.loading) {
-          orderSummary = <Spinner />;
-        }
-
-        let burger = <Spinner />;
-
-        if (this.props.ingredients) {
-          burger = (
-            <Aux>
-              <Burger ingredients={this.props.ingredients} />
-              <Modal show={this.state.order} removeModal={this.removeModalHandler}>
-                {orderSummary}
-              </Modal>
-              <BuildControls
-                price={this.props.price}
-                disabledSub={disabledInfoSub}
-                disabledAdd={disabledInfoAdd}
-                ingredientAdd={this.props.onAddIngredient}
-                ingredientSubtract={this.props.onRemoveIngredient}
-                purchaseable={this.updatePurchaseState()}
-                order={this.orderHandler}
-              />
-            </Aux>
-          );
-        }
-
-        return burger;
-      }
-    },
-    axios
-  )
+    return burger;
+  }, axios)
 );
