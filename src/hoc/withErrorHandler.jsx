@@ -7,7 +7,8 @@ export default (WrappedComponent, axios) => {
     state = {
       error : null
     };
-    componentWillMount() {
+
+    componentDidMount() {
       this.reqInterceptor = axios.interceptors.request.use(req => {
         this.setState({ error: null });
         return req;
@@ -29,7 +30,7 @@ export default (WrappedComponent, axios) => {
       return (
         <Aux>
           <Modal show={this.state.error} removeModal={() => this.setState({ error: null })}>
-            <p>{this.state.error ? this.state.error.message : null}</p>
+            {this.state.error ? this.state.error.message : null}
           </Modal>
           <WrappedComponent {...this.props} />
         </Aux>

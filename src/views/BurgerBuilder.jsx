@@ -1,9 +1,9 @@
 // Dependencies
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from '../axios';
 import { connect } from 'react-redux';
 
-// Redux
+// Store
 import { ingredientsActions } from '../store/actions/ingredients';
 
 // Components
@@ -37,13 +37,17 @@ const mapDispatchToProps = dispatch => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   withErrorHandler(props => {
+    const { onGetIngredients } = props;
     // State
     const [ order, setOrder ] = useState(false);
 
     // Effect
-    useEffect(() => {
-      props.onGetIngredients();
-    }, []);
+    useEffect(
+      () => {
+        onGetIngredients();
+      },
+      [ onGetIngredients ]
+    );
 
     // Handlers
     const updatePurchaseState = () => {
@@ -51,18 +55,18 @@ export default connect(mapStateToProps, mapDispatchToProps)(
       return sum > 0;
     };
 
-    const orderHandler = () => {
+    const orderHandler = useCallback(() => {
       setOrder(true);
-    };
+    }, []);
 
     const continueToCheckoutHandler = () => {
       props.onOrder();
       props.history.push('/checkout');
     };
 
-    const removeModalHandler = () => {
+    const removeModalHandler = useCallback(() => {
       setOrder(false);
-    };
+    }, []);
 
     // Variables
     const disabledInfoSub = { ...props.ingredients };

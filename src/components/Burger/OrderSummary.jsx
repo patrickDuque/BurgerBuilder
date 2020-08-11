@@ -2,7 +2,7 @@ import React from 'react';
 import Aux from '../../hoc/Auxilliary';
 import CustomButton from '../UI/CustomButton';
 
-export default props => {
+export default React.memo(props => {
   const ingSummary = Object.keys(props.ingredients).map(ingredient => (
     <li key={ingredient + props.ingredients[ingredient]}>
       <span style={{ textTransform: 'capitalize' }}>{ingredient}</span>: {props.ingredients[ingredient]}
@@ -26,4 +26,4 @@ export default props => {
       </CustomButton>
     </Aux>
   );
-};
+});
