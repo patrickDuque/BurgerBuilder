@@ -1,6 +1,6 @@
 // Libraries
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { ordersAction } from '../store/actions/orders';
 import axios from '../axios';
 
@@ -9,34 +9,25 @@ import Spinner from '../components/UI/Spinner';
 import Order from '../components/Order/Order';
 import withErrorHandler from '../hoc/withErrorHandler';
 
-const mapStateToProps = state => {
-  const { orders, loading } = state.orders;
-  return {
-    orders,
-    loading
-  };
-};
+export default withErrorHandler(() => {
+  const dispatch = useDispatch();
+  // Selectors
+  const orders = useSelector(state => state.orders.orders);
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onGetOrders : token => dispatch(ordersAction.getOrders(token))
-  };
-};
+  // Dispatch
+  const onGetOrders = useCallback(token => dispatch(ordersAction.getOrders(token)), [ dispatch ]);
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  withErrorHandler(props => {
-    const { onGetOrders } = props;
-    useEffect(
-      () => {
-        onGetOrders(localStorage.getItem('token'));
-      },
-      [ onGetOrders ]
-    );
+  // Effects
+  useEffect(
+    () => {
+      onGetOrders(localStorage.getItem('token'));
+    },
+    [ onGetOrders ]
+  );
 
-    return (
-      <div style={{ padding: '10px' }}>
-        {props.orders ? props.orders.map(order => <Order key={order.id} order={order} />) : <Spinner />}
-      </div>
-    );
-  }, axios)
-);
+  return (
+    <div style={{ padding: '10px' }}>
+      {orders ? orders.map(order => <Order key={order.id} order={order} />) : <Spinner />}
+    </div>
+  );
+}, axios);

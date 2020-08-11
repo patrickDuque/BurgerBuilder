@@ -1,6 +1,6 @@
 // Dependencies
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
 // Constants
@@ -11,26 +11,8 @@ import CustomButton from '../components/UI/CustomButton';
 import Spinner from '../components/UI/Spinner';
 import CustomInput from '../components/UI/CustomInput';
 
-const mapStateToProps = state => {
-  const { ingredients, price, loading, ordered } = state.ingredients;
-  return {
-    ingredients,
-    price,
-    loading,
-    ordered,
-    user        : state.auth.user,
-    token       : state.auth.token
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onResetIngredients : () => dispatch(ingredientsActions.getIngredients()),
-    onSendOrder        : (data, token) => dispatch(ingredientsActions.postOrder(data, token))
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(props => {
+export default props => {
+  const dispatch = useDispatch();
   // State
   const [ name, setName ] = useState('');
   const [ street, setStreet ] = useState('');
@@ -38,13 +20,23 @@ export default connect(mapStateToProps, mapDispatchToProps)(props => {
   const [ city, setCity ] = useState('');
   const [ phoneNumber, setPhoneNumber ] = useState('');
 
+  // Selectors
+  const ingredients = useSelector(state => state.ingredients.ingredients);
+  const price = useSelector(state => state.ingredients.price);
+  const loading = useSelector(state => state.ingredients.loading);
+  const ordered = useSelector(state => state.ingredients.ordered);
+  const user = useSelector(state => state.auth.user);
+
+  // Dispatch
+  const onSendOrder = (data, token) => dispatch(ingredientsActions.postOrder(data, token));
+
   // Handlers
   const submitOrderHandler = e => {
     e.preventDefault();
     const time = new Date();
     const data = {
-      ingredients : props.ingredients,
-      price       : props.price,
+      ingredients : ingredients,
+      price       : price,
       customer    : {
         name        : name,
         address     : {
@@ -57,17 +49,17 @@ export default connect(mapStateToProps, mapDispatchToProps)(props => {
       timeOrdered : `${time.getHours()}:${time.getMinutes()}`,
       userId      : localStorage.getItem('userId')
     };
-    if (props.user) {
-      props.onSendOrder(data, localStorage.getItem('token'));
+    if (user) {
+      onSendOrder(data, localStorage.getItem('token'));
     } else {
       props.history.push('/signin');
     }
   };
 
   // Variables
-  let redirect = props.ordered ? <Redirect to='/' /> : null;
+  let redirect = ordered ? <Redirect to='/' /> : null;
   let data = <Spinner />;
-  if (!props.loading) {
+  if (!loading) {
     data = (
       <form onSubmit={submitOrderHandler}>
         <CustomInput
@@ -110,7 +102,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(props => {
           label='Contact Number'
           id='phoneNumber'
         />
-        <CustomButton type='Success'>{props.user ? 'ORDER' : 'SIGN IN'}</CustomButton>
+        <CustomButton type='Success'>{user ? 'ORDER' : 'SIGN IN'}</CustomButton>
       </form>
     );
   }
@@ -121,4 +113,4 @@ export default connect(mapStateToProps, mapDispatchToProps)(props => {
       {data}
     </div>
   );
-});
+};

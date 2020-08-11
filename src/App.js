@@ -1,6 +1,6 @@
 // Libraries
-import React, { useEffect, Suspense } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, Suspense, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import * as actions from './store/actions/auth';
 
@@ -18,25 +18,23 @@ import Spinner from './components/UI/Spinner';
 const Orders = React.lazy(() => import('./views/Orders'));
 const SignUp = React.lazy(() => import('./views/SignUp'));
 
-const mapStateToProps = state => {
-  return {
-    ingredients : state.ingredients.ingredients === null,
-    user        : state.auth.user
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onAutoLogin : () => dispatch(actions.authCheck())
-  };
-};
-
 function App(props) {
-  useEffect(() => {
-    props.onAutoLogin();
-  }, []);
+  const dispatch = useDispatch();
 
-  console.log('APP');
+  // Selector
+  const ingredients = useSelector(state => state.ingredients.ingredients === null);
+  const user = useSelector(state => state.auth.user);
+
+  // Dispatch
+  const onAutoLogin = useCallback(() => dispatch(actions.authCheck()), [ dispatch ]);
+
+  // Effects
+  useEffect(
+    () => {
+      onAutoLogin();
+    },
+    [ onAutoLogin ]
+  );
 
   let routes = (
     <Switch>
@@ -55,7 +53,7 @@ function App(props) {
     </Switch>
   );
 
-  if (props.user) {
+  if (user) {
     routes = (
       <Switch>
         <Route path='/checkout' component={Checkout} />
@@ -77,11 +75,11 @@ function App(props) {
   return (
     <BrowserRouter>
       <Layout>
-        {props.ingredients ? <Redirect to='/' /> : null}
+        {ingredients ? <Redirect to='/' /> : null}
         {routes}
       </Layout>
     </BrowserRouter>
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

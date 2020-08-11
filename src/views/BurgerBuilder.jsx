@@ -1,7 +1,7 @@
 // Dependencies
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from '../axios';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Store
 import { ingredientsActions } from '../store/actions/ingredients';
@@ -15,105 +15,92 @@ import OrderSummary from '../components/Burger/OrderSummary';
 import Spinner from '../components/UI/Spinner';
 import withErrorHandler from '../hoc/withErrorHandler';
 
-const mapStateToProps = state => {
-  const { ingredients, price, loading, ordered } = state.ingredients;
-  return {
-    ingredients,
-    price,
-    loading,
-    ordered,
-    token       : state.auth.token
+export default withErrorHandler(props => {
+  const dispatch = useDispatch();
+  // State
+  const [ order, setOrder ] = useState(false);
+  const ingredients = useSelector(state => state.ingredients.ingredients);
+  const price = useSelector(state => state.ingredients.price);
+  const loading = useSelector(state => state.ingredients.loading);
+
+  // Dispatch
+  const onAddIngredient = type => dispatch(ingredientsActions.addIngredient(type));
+  const onRemoveIngredient = type => dispatch(ingredientsActions.subIngredient(type));
+  const onGetIngredients = useCallback(() => dispatch(ingredientsActions.getIngredients()), [ dispatch ]);
+  const onOrder = () => dispatch(ingredientsActions.goToOrder());
+
+  // Effect
+  useEffect(
+    () => {
+      onGetIngredients();
+    },
+    [ onGetIngredients ]
+  );
+
+  // Handlers
+  const updatePurchaseState = () => {
+    const sum = Object.values(ingredients).reduce((a, b) => a + b, 0);
+    return sum > 0;
   };
-};
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onAddIngredient    : type => dispatch(ingredientsActions.addIngredient(type)),
-    onRemoveIngredient : type => dispatch(ingredientsActions.subIngredient(type)),
-    onGetIngredients   : () => dispatch(ingredientsActions.getIngredients()),
-    onOrder            : () => dispatch(ingredientsActions.goToOrder())
+  const orderHandler = useCallback(() => {
+    setOrder(true);
+  }, []);
+
+  const continueToCheckoutHandler = () => {
+    onOrder();
+    props.history.push('/checkout');
   };
-};
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  withErrorHandler(props => {
-    const { onGetIngredients } = props;
-    // State
-    const [ order, setOrder ] = useState(false);
+  const removeModalHandler = useCallback(() => {
+    setOrder(false);
+  }, []);
 
-    // Effect
-    useEffect(
-      () => {
-        onGetIngredients();
-      },
-      [ onGetIngredients ]
+  // Variables
+  const disabledInfoSub = { ...ingredients };
+  for (let key in disabledInfoSub) {
+    disabledInfoSub[key] = disabledInfoSub[key] <= 0;
+  }
+
+  const disabledInfoAdd = { ...ingredients };
+  for (let key in disabledInfoAdd) {
+    disabledInfoAdd[key] = disabledInfoAdd[key] >= 4;
+  }
+
+  let orderSummary = (
+    <OrderSummary
+      cancel={removeModalHandler}
+      price={price}
+      ingredients={ingredients}
+      continue={continueToCheckoutHandler}
+    />
+  );
+
+  if (loading) {
+    orderSummary = <Spinner />;
+  }
+
+  let burger = <Spinner />;
+
+  if (ingredients) {
+    burger = (
+      <Aux>
+        <Burger ingredients={ingredients} />
+        <Modal show={order} removeModal={removeModalHandler}>
+          {orderSummary}
+        </Modal>
+        <BuildControls
+          price={price}
+          disabledSub={disabledInfoSub}
+          disabledAdd={disabledInfoAdd}
+          ingredientAdd={onAddIngredient}
+          ingredientSubtract={onRemoveIngredient}
+          purchaseable={updatePurchaseState()}
+          order={orderHandler}
+        />
+      </Aux>
     );
+  }
 
-    // Handlers
-    const updatePurchaseState = () => {
-      const sum = Object.values(props.ingredients).reduce((a, b) => a + b, 0);
-      return sum > 0;
-    };
-
-    const orderHandler = useCallback(() => {
-      setOrder(true);
-    }, []);
-
-    const continueToCheckoutHandler = () => {
-      props.onOrder();
-      props.history.push('/checkout');
-    };
-
-    const removeModalHandler = useCallback(() => {
-      setOrder(false);
-    }, []);
-
-    // Variables
-    const disabledInfoSub = { ...props.ingredients };
-    for (let key in disabledInfoSub) {
-      disabledInfoSub[key] = disabledInfoSub[key] <= 0;
-    }
-
-    const disabledInfoAdd = { ...props.ingredients };
-    for (let key in disabledInfoAdd) {
-      disabledInfoAdd[key] = disabledInfoAdd[key] >= 4;
-    }
-
-    let orderSummary = (
-      <OrderSummary
-        cancel={removeModalHandler}
-        price={props.price}
-        ingredients={props.ingredients}
-        continue={continueToCheckoutHandler}
-      />
-    );
-
-    if (props.loading) {
-      orderSummary = <Spinner />;
-    }
-
-    let burger = <Spinner />;
-
-    if (props.ingredients) {
-      burger = (
-        <Aux>
-          <Burger ingredients={props.ingredients} />
-          <Modal show={order} removeModal={removeModalHandler}>
-            {orderSummary}
-          </Modal>
-          <BuildControls
-            price={props.price}
-            disabledSub={disabledInfoSub}
-            disabledAdd={disabledInfoAdd}
-            ingredientAdd={props.onAddIngredient}
-            ingredientSubtract={props.onRemoveIngredient}
-            purchaseable={updatePurchaseState()}
-            order={orderHandler}
-          />
-        </Aux>
-      );
-    }
-
-    return burger;
-  }, axios)
-);
+  return burger;
+}, axios);
