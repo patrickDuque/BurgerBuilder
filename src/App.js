@@ -36,6 +36,7 @@ function App(props) {
     [ onAutoLogin ]
   );
 
+  // Routes without auth
   let routes = (
     <Switch>
       <Route path='/signin' component={SignIn} />
@@ -53,6 +54,7 @@ function App(props) {
     </Switch>
   );
 
+  // Routes with auth
   if (user) {
     routes = (
       <Switch>
